@@ -6,7 +6,10 @@ namespace Lab5
 {
     public partial class Task2 : Form
     {
+        PointF startPoint = new PointF(0, 0);
+        PointF endPoint = new PointF(0, 0);
         private Bitmap bitmap;
+        private Graphics g;
         private Random random = new Random();
 
         public Task2()
@@ -15,6 +18,7 @@ namespace Lab5
 
             bitmap = new Bitmap(pictureBox1.Width, pictureBox1.Height);
             pictureBox1.Image = bitmap;
+            g = Graphics.FromImage(bitmap);
         }
 
         private void DrawButton_Click(object sender, EventArgs e)
@@ -26,16 +30,13 @@ namespace Lab5
             }
 
             bitmap = new Bitmap(pictureBox1.Width, pictureBox1.Height);
-            using (Graphics g = Graphics.FromImage(bitmap))
-            {
-                g.Clear(Color.White);
-                PointF startPoint = new PointF(0, pictureBox1.Height / 2);
-                PointF endPoint = new PointF(pictureBox1.Width, pictureBox1.Height / 2);
+            g = Graphics.FromImage(bitmap);
+            g.Clear(Color.White);
 
-                MidpointDisplacement(g, startPoint, endPoint, roughness, detailLevelBar.Value);
-            }
 
-            pictureBox1.Image = bitmap; 
+            MidpointDisplacement(g, startPoint, endPoint, roughness, detailLevelBar.Value);
+
+            pictureBox1.Image = bitmap;
             pictureBox1.Invalidate();
         }
         private void MidpointDisplacement(Graphics g, PointF start, PointF end, float roughness, int detailLevel)
@@ -61,7 +62,7 @@ namespace Lab5
                 float midX = (start.X + end.X) / 2;
                 float midY = (start.Y + end.Y) / 2;
                 float length = (end.X - start.X) / pictureBox1.Width;
-                float randomOffset = (float)(random.NextDouble() * (roughness * length * 2)) - (roughness * length);
+                float randomOffset = (float)(random.NextDouble() * (roughness * length * 2)) - (roughness * length); //TODO
                 midY += randomOffset;
 
                 PointF midPoint = new PointF(midX, midY);
@@ -86,6 +87,22 @@ namespace Lab5
                 }
 
                 bitmap = newBitmap;
+                pictureBox1.Image = bitmap;
+            }
+        }
+
+        private void pictureBox1_MouseClick(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Left)
+            {
+                startPoint = new PointF(e.Location.X, e.Location.Y);
+                g.DrawRectangle(new Pen(Color.Blue,2),new Rectangle(e.Location.X,e.Location.Y,1,1));
+                pictureBox1.Image = bitmap;
+            }
+            if (e.Button == MouseButtons.Right)
+            {
+                endPoint = new PointF(e.Location.X, e.Location.Y);
+                g.DrawRectangle(new Pen(Color.Orange,2), new Rectangle(e.Location.X, e.Location.Y, 1, 1));
                 pictureBox1.Image = bitmap;
             }
         }

@@ -40,14 +40,14 @@ namespace Lab5
 
             float width = maxX - minX;
             float height = maxY - minY;
-            float centexX = (maxX + minX) / 2;
+            float centerX = (maxX + minX) / 2;
             float centerY = (maxY + minY) / 2;
 
             float k = Math.Min((targetWidth - padding) / width, (targetHeight - padding) / height); //коэф. масштабирования
 
             for (int i = 0; i < points.Count; i++)
             {
-                points[i] = new FractalPoint((points[i].X * k) + (targetWidth / 2 - (centexX * k)), (points[i].Y * k) + (targetHeight / 2 - (centerY * k)), points[i].Flag);
+                points[i] = new FractalPoint((points[i].X * k) + (targetWidth / 2 - (centerX * k)), (points[i].Y * k) + (targetHeight / 2 - (centerY * k)), points[i].Flag);
             }
 
             for (int i = 0; i < points.Count - 1; i++)
@@ -68,7 +68,6 @@ namespace Lab5
             Stack<(PointF p, float angle)> stateStack = new Stack<(PointF p, float angle)>();
 
             string s = GetFractalString(l.initAxiom, maxDepth, l.rules);
-            int cnt = 0;
             int deviation = (int)(deviationProportion * l.angle);
 
             foreach (char c in s)
@@ -86,16 +85,11 @@ namespace Lab5
 
                 if (char.IsUpper(c))
                 {
-                    if (cnt % 2 == 0)
-                    {
                         float x = (float)(curPoint.X + Math.Cos(curAngle * Math.PI / 180));
                         float y = (float)(curPoint.Y + Math.Sin(curAngle * Math.PI / 180));
                         res.Add(new FractalPoint(x, y, false));
                         curPoint = new PointF(x, y);
-                    }
-                    cnt++;
                 }
-                else cnt = 0;
             }
 
             return res;
@@ -132,14 +126,14 @@ namespace Lab5
 
             float width = maxx - minx;
             float height = maxy - miny;
-            float centexX = (maxx + minx) / 2;
+            float centerX = (maxx + minx) / 2;
             float centerY = (maxy + miny) / 2;
 
             float k = Math.Min((targetWidth - padding) / width, (targetHeight - padding) / height);
 
             for (int i = 0; i < points.Count; i++)
             {
-                points[i] = new TreeFractalPoint((points[i].X * k) + (targetWidth / 2 - (centexX * k)), (points[i].Y * k) + (targetHeight / 2 - (centerY * k)), points[i].Flag, points[i].Depth);
+                points[i] = new TreeFractalPoint((points[i].X * k) + (targetWidth / 2 - (centerX * k)), (points[i].Y * k) + (targetHeight / 2 - (centerY * k)), points[i].Flag, points[i].Depth);
             }
 
             for (int i = 0; i < points.Count - 1; i++)
@@ -175,7 +169,6 @@ namespace Lab5
             string s = GetFractalString(l.initAxiom, maxDepth, l.rules);
             int depth = 0;
 
-            int cnt = 0;
             int deviation = (int)(deviationProportion * l.angle);
 
             foreach (char c in s)
@@ -200,16 +193,11 @@ namespace Lab5
 
                 if (char.IsUpper(c))
                 {
-                    if (cnt % 2 == 0)
-                    {
-                        float x = (float)(curPoint.X + length * Math.Cos(curAngle * Math.PI / 180));
-                        float y = (float)(curPoint.Y + length * Math.Sin(curAngle * Math.PI / 180));
-                        res.Add(new TreeFractalPoint(x, y, false, depth));
-                        curPoint = (x, y);
-                    }
-                    cnt++;
+                    float x = (float)(curPoint.X + length * Math.Cos(curAngle * Math.PI / 180));
+                    float y = (float)(curPoint.Y + length * Math.Sin(curAngle * Math.PI / 180));
+                    res.Add(new TreeFractalPoint(x, y, false, depth));
+                    curPoint = (x, y);
                 }
-                else cnt = 0;
             }
 
             return res;
