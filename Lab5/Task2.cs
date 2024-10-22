@@ -41,29 +41,17 @@ namespace Lab5
         }
         private void MidpointDisplacement(Graphics g, PointF start, PointF end, float roughness, int detailLevel)
         {
-            if (detailLevel <= 0)
+            if (detailLevel == 0)
             {
                 g.DrawLine(Pens.Black, start, end);
-
-                using (Brush blackBrush = new SolidBrush(Color.Black))
-                {
-                    PointF[] fillPoints = new PointF[]
-                    {
-                start,
-                end,
-                new PointF(end.X, pictureBox1.Height),
-                new PointF(start.X, pictureBox1.Height)
-                    };
-
-                }
             }
             else
             {
                 float midX = (start.X + end.X) / 2;
-                float midY = (start.Y + end.Y) / 2;
+                float midY = (start.Y + end.Y) / 2; // (hL + hR) / 2 
                 float length = (end.X - start.X) / pictureBox1.Width;
-                float randomOffset = (float)(random.NextDouble() * (roughness * length * 2)) - (roughness * length); //TODO
-                midY += randomOffset;
+                float randomOffset = (float)(random.NextDouble() * (roughness * length * 2)) - (roughness * length); // Задание диапазона random(- R * l, R * l)
+                midY += randomOffset; // (hL + hR) / 2 + random(- R * l, R * l)
 
                 PointF midPoint = new PointF(midX, midY);
 
@@ -72,37 +60,24 @@ namespace Lab5
             }
         }
 
-        protected override void OnResize(EventArgs e)
-        {
-            base.OnResize(e);
-
-            if (bitmap != null && pictureBox1.ClientSize.Width > 0 && pictureBox1.ClientSize.Height > 0)
-            {
-                Bitmap newBitmap = new Bitmap(pictureBox1.ClientSize.Width, pictureBox1.ClientSize.Height);
-                using (Graphics g = Graphics.FromImage(newBitmap))
-                {
-                    g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
-
-                    g.DrawImage(bitmap, 0, 0, newBitmap.Width, newBitmap.Height);
-                }
-
-                bitmap = newBitmap;
-                pictureBox1.Image = bitmap;
-            }
-        }
-
         private void pictureBox1_MouseClick(object sender, MouseEventArgs e)
         {
             if (e.Button == MouseButtons.Left)
             {
+                g = Graphics.FromImage(bitmap);
+                g.Clear(Color.White);
                 startPoint = new PointF(e.Location.X, e.Location.Y);
                 g.DrawRectangle(new Pen(Color.Blue,2),new Rectangle(e.Location.X,e.Location.Y,1,1));
+                g.DrawRectangle(new Pen(Color.Orange, 2), new Rectangle((int)endPoint.X, (int)endPoint.Y, 1, 1));
                 pictureBox1.Image = bitmap;
             }
             if (e.Button == MouseButtons.Right)
             {
+                g = Graphics.FromImage(bitmap);
+                g.Clear(Color.White);
                 endPoint = new PointF(e.Location.X, e.Location.Y);
                 g.DrawRectangle(new Pen(Color.Orange,2), new Rectangle(e.Location.X, e.Location.Y, 1, 1));
+                g.DrawRectangle(new Pen(Color.Blue, 2), new Rectangle((int)startPoint.X, (int)startPoint.Y, 1, 1));
                 pictureBox1.Image = bitmap;
             }
         }
