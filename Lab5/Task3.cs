@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -126,11 +127,52 @@ namespace Lab5
             if (_points.Count < 4) return;
             List<Point> result = new List<Point>();
             float step = 0.01f;
-            
-                for (int i = 1; i <= _points.Count - 3; i += 2)
+
+            if (_points.Count < 6)
+            {
+                for (int i = 0; i <= _points.Count - 3; i += 4)
                 {
-                    Point temp = new Point((_points[i - 1].X + _points[i].X) / 2, (_points[i - 1].Y + _points[i].Y) / 2);
-                    Point temp2 = new Point((_points[i + 1].X + _points[i + 2].X) / 2, (_points[i + 1].Y + _points[i + 2].Y) / 2);
+                    for (float t = 0; t <= 1; t += step)
+                    {
+                        float x = (float)(Math.Pow(1 - t, 3) * _points[i].X +
+                                           3 * Math.Pow(1 - t, 2) * t * _points[i + 1].X +
+                                           3 * (1 - t) * Math.Pow(t, 2) * _points[i + 2].X +
+                                           Math.Pow(t, 3) * _points[i + 3].X);
+
+                        float y = (float)(Math.Pow(1 - t, 3) * _points[i].Y +
+                                           3 * Math.Pow(1 - t, 2) * t * _points[i + 1].Y +
+                                           3 * (1 - t) * Math.Pow(t, 2) * _points[i + 2].Y +
+                                           Math.Pow(t, 3) * _points[i + 3].Y);
+
+                        result.Add(new Point((int)x, (int)y));
+                    }
+                }
+            }
+            else
+            {
+                Point temp2 = new Point((_points[2].X + _points[3].X) / 2, (_points[2].Y + _points[3].Y) / 2);
+                Point temp;
+
+                for (float t = 0; t <= 1; t += step)
+                {
+                    float x = (float)(Math.Pow(1 - t, 3) * _points[0].X +
+                                       3 * Math.Pow(1 - t, 2) * t * _points[1].X +
+                                       3 * (1 - t) * Math.Pow(t, 2) * _points[2].X +
+                                       Math.Pow(t, 3) * temp2.X);
+
+                    float y = (float)(Math.Pow(1 - t, 3) * _points[0].Y +
+                                       3 * Math.Pow(1 - t, 2) * t * _points[1].Y +
+                                       3 * (1 - t) * Math.Pow(t, 2) * _points[2].Y +
+                                       Math.Pow(t, 3) * temp2.Y);
+
+                    result.Add(new Point((int)x, (int)y));
+                }
+
+                for (int i = 3; i <= _points.Count - 5; i += 2)
+                {
+                    temp = new Point((_points[i - 1].X + _points[i].X) / 2, (_points[i - 1].Y + _points[i].Y) / 2);
+                    temp2 = new Point((_points[i + 1].X + _points[i + 2].X) / 2, (_points[i + 1].Y + _points[i + 2].Y) / 2);
+
                     for (float t = 0; t <= 1; t += step)
                     {
                         float x = (float)(Math.Pow(1 - t, 3) * temp.X +
@@ -146,6 +188,49 @@ namespace Lab5
                         result.Add(new Point((int)x, (int)y));
                     }
                 }
+
+                if (_points.Count % 2 == 0)
+                {
+                    temp = new Point((_points[_points.Count - 4].X + _points[_points.Count - 3].X) / 2,
+                    (_points[_points.Count - 4].Y + _points[_points.Count - 3].Y) / 2);
+
+                    for (float t = 0; t <= 1; t += step)
+                    {
+                        float x = (float)(Math.Pow(1 - t, 3) * temp.X +
+                                           3 * Math.Pow(1 - t, 2) * t * _points[_points.Count - 3].X +
+                                           3 * (1 - t) * Math.Pow(t, 2) * _points[_points.Count - 2].X +
+                                           Math.Pow(t, 3) * _points[_points.Count - 1].X);
+
+                        float y = (float)(Math.Pow(1 - t, 3) * temp.Y +
+                                           3 * Math.Pow(1 - t, 2) * t * _points[_points.Count - 3].Y +
+                                           3 * (1 - t) * Math.Pow(t, 2) * _points[_points.Count - 2].Y +
+                                           Math.Pow(t, 3) * _points[_points.Count - 1].Y);
+
+                        result.Add(new Point((int)x, (int)y));
+                    }
+                }
+                else
+                {
+                    temp = new Point((_points[_points.Count - 5].X + _points[_points.Count - 4].X) / 2,
+                    (_points[_points.Count - 5].Y + _points[_points.Count - 4].Y) / 2);
+
+                    for (float t = 0; t <= 1; t += step)
+                    {
+                        float x = (float)(Math.Pow(1 - t, 3) * temp.X +
+                                           3 * Math.Pow(1 - t, 2) * t * _points[_points.Count - 4].X +
+                                           3 * (1 - t) * Math.Pow(t, 2) * _points[_points.Count - 3].X +
+                                           Math.Pow(t, 3) * _points[_points.Count - 2].X);
+
+                        float y = (float)(Math.Pow(1 - t, 3) * temp.Y +
+                                           3 * Math.Pow(1 - t, 2) * t * _points[_points.Count - 4].Y +
+                                           3 * (1 - t) * Math.Pow(t, 2) * _points[_points.Count - 3].Y +
+                                           Math.Pow(t, 3) * _points[_points.Count - 2].Y);
+
+                        result.Add(new Point((int)x, (int)y));
+                    }
+                }
+            }
+
 
 
             if (result.Count > 1)
